@@ -1,0 +1,40 @@
+variables:
+  - name: major
+    value: "1"
+  - name: minor
+    value: "0"
+  - name: isMain
+    value: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+
+# Set the version number of the build:
+name: $(major).$(minor)$(rev:.r)
+
+trigger:
+  branches:
+    include:
+      - main
+
+pool: 
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - script: |
+      curl https://sh.rustup.rs -sSf | sh -s -- -y
+      echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
+    displayName: 'Install Rust'
+  - script: |
+      cargo build --release
+    displayName: 'Cargo Build'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(System.DefaultWorkingDirectory)/bin/RustApp
+      artifactName: RustApp
+
+  - task: AzureFunctionApp@1 # Add this at the end of your file
+    inputs:
+      azureSubscription: 'AzureDev'
+      appType: functionAppLinux # default is functionApp
+      appName: $(appName)
+      package: $(System.ArtifactsDirectory)/**/*.zip
+ 
