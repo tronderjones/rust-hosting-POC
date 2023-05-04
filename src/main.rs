@@ -29,7 +29,7 @@ async fn main() -> std::io::Result<()> {
             )
             .wrap(Logger::default())
             .wrap(Logger::new("%a %{User-Agent}i"))
-            .service(functions::get_hello)
+            .service(functions::hello_handler)
             .default_service(web::route().to(default_service))
     })
     .bind((Ipv4Addr::UNSPECIFIED, port))?
