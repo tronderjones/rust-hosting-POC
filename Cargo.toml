@@ -7,10 +7,12 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4.3.0"
-tokio = { version = "1", features = ["rt", "macros", "rt-multi-thread"] }
 serde = { version = "1.0", features = ["derive"] }
 env_logger = "0.8.2"
 serde_json = "1.0.61"
 mime = "0.3.16"
 chrono = { version = "0.4.19", features = ["serde"] }
 
+[[bin]]
+name = "rust_hosting_POC"
+path = "src/main.rs"
